@@ -146,9 +146,12 @@ class User extends Model implements Authenticatable
         return 'remember_token';
     }
     public function setPasswordAttribute($value)
-    {
-        $this->attributes['password'] = Hash::make($value);
-    }
+     {
+        if(Hash::needsRehash($value))
+            $password = Hash::make($value);
+ 
+        $this->attributes['password'] = $value;
+     }
 
     public function role(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
