@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Hash;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+
 /**
  * @OA\Schema(
  *      schema="User",
@@ -82,6 +86,8 @@ use Illuminate\Support\Facades\Hash;
  */
 class User extends Model implements Authenticatable
 {
+    use HasApiTokens, HasFactory, Notifiable;
+    
     public $table = 'users';
 
     public $fillable = [
@@ -136,15 +142,16 @@ class User extends Model implements Authenticatable
         return $this->remember_token;
     }
 
+    public function getRememberTokenName()
+    {
+        return 'remember_token';
+    }
+
     public function setRememberToken($value)
     {
         $this->remember_token = $value;
     }
 
-    public function getRememberTokenName()
-    {
-        return 'remember_token';
-    }
     public function setPasswordAttribute($value)
      {
         if(Hash::needsRehash($value))
@@ -163,3 +170,5 @@ class User extends Model implements Authenticatable
         return $this->hasMany(\App\Models\Photo::class, 'user_id');
     }
 }
+
+
